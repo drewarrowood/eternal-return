@@ -1,0 +1,713 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue
+}
+
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\gn}[1]{\ulcorner #1 \urcorner}
+\DeclareMathOperator{\Prov}{Prov}
+\DeclareMathOperator{\Con}{Con}
+\DeclareMathOperator{\prf}{Proof}
+\newcommand{\PA}{\mathsf{PA}}
+\newcommand{\ZFC}{\mathsf{ZFC}}
+\newcommand{\GL}{\mathsf{GL}}
+\newcommand{\GLS}{\mathsf{GLS}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Self-Certifying Return%
+\thanks{Packaging note for the Eternal Return table.
+The recurrence theorem is Poincar\'e's, the incompleteness theorems are G\"odel's,
+the fixed-point theorem for provability is L\"ob's, and the modal completeness theorem is Solovay's.
+The note only keeps their quantifiers from being exchanged.
+It is the formal companion to the table review in the repository root.}}
+\author{Eternal Return table}
+\date{28 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note separates Poincar\'e recurrence from self-certifying readings of ``this life returns.''
+In a measure-preserving system of finite measure, almost every point of a positive-measure set returns to that set infinitely often; when the space is separable and metric, almost every point returns to every neighborhood of itself (\(\varepsilon\)-Return).
+Exact identity of a continuous state is a different statement, and it is typically not a predicate of a recursively axiomatized arithmetic \(S\): \(S\) can express equality of codes and coded neighborhood membership.
+Let \(\Box\) be provability in a standard proof predicate for a consistent, recursively axiomatized extension \(S\) of Peano arithmetic.
+The logic of \(\Box\) is G\"odel--L\"ob logic \(\GL\).
+The scheme \(\Box A \to A\) is not a theorem of \(\GL\); L\"ob's theorem replaces it, and the L\"ob hypothesis is not the hypothesis of Poincar\'e's theorem.
+A configuration that encodes \(S\), or encodes a proof of its own return, is a self-referential certificate.
+The Henkin sentence for \(S\) is provable in \(S\) and does not prove \(\Con_S\).
+A fixed point that conjoins a recurrence formula with \(\Con_S\) is unprovable if \(S\) is consistent.
+These are limits on self-certification inside \(S\).
+They do not say that recurrent sets are empty.
+Separately, recurrence queries for configurations that encode a universal computation are undecidable.
+Undecidability of the query does not decide whether a given orbit returns.
+Nothing here equates \(\varepsilon\)-Return with the demand to will an identical life, and incompleteness of \(S\) is neither a refutation of the recurrence theorem nor an argument for it.
+\end{abstract}
+
+\section{Introduction}
+
+Three different claims travel under the word ``return.''
+This note gives each one a sentence, a system, and a hypothesis list.
+
+The first is dynamical.
+A measure-preserving transformation of a finite measure space returns almost every point of a positive-measure set to that set, infinitely often \citep{poincare1890,walters1982}.
+In a separable metric space the same argument yields \emph{\(\varepsilon\)-Return}: almost sure return into every neighborhood of the point.
+The second is linguistic.
+A formal arithmetic \(S\) does not contain an arbitrary point of a continuum as a value of a variable.
+It contains codes.
+The predicates it can form of those codes are code-identity and coded neighborhood membership.
+The third is self-certifying.
+One asks the configuration to contain the system \(S\), or a proof in \(S\), and to count that included proof as establishing the return of the configuration that contains it.
+The tools for that reading are the second incompleteness theorem \citep{godel1931}, L\"ob's theorem \citep{lob1955}, and the provability logic \(\GL\) \citep{solovay1976,boolos1993}.
+Throughout, \(\Box\) means provability in one named system \(S\), not an unspecified necessity and not a knower.
+
+The note proves no new incompleteness theorem and no new recurrence theorem.
+Section~\ref{sec:setup} records \(\varepsilon\)-Return with its hypotheses and the predicate boundary.
+Section~\ref{sec:modal} packages \(\Box\) as \(\GL\).
+Section~\ref{sec:epistemic} says why an \(\mathsf{S5}\) knowledge operator is a different symbol.
+Section~\ref{sec:barrier} applies the second theorem and L\"ob's theorem to two named fixed points.
+Section~\ref{sec:undecidable} records a halting reduction for the query ``does \(C\) recur?''
+Section~\ref{sec:not} lists the readings that these results do not support.
+G\"odel's rotating cosmological models \citep{godel1949} are a solution of Einstein's equations with closed timelike curves.
+They are not an argument about \(\Prov_S\), and they are not used below.
+
+\section{Setup: dynamics and the formal language}
+\label{sec:setup}
+
+Two systems are in play, and they are not the same object.
+The dynamical statement lives in analysis.
+The provability statement lives in arithmetic.
+
+\begin{definition}[Foundations]
+\label{def:systems}
+\(\ZFC\) is Zermelo--Fraenkel set theory with choice, used only as a sufficient ambient theory in which Lebesgue measure and the argument of Theorem~\ref{thm:poincare} can be formalized.
+\(S\) is a consistent, recursively axiomatized extension of Peano arithmetic \(\PA\).
+The symbol \(\Box\) is never used for provability in \(\ZFC\).
+When provability in \(\ZFC\) is intended it is written \(\Prov_{\ZFC}\).
+\end{definition}
+
+Consistency of \(S\) is an external assumption about \(S\), in the usual sense that no \(S\)-derivation ends in \(0=1\).
+It is not an axiom of \(S\).
+
+\subsection{Measure-preserving dynamics}
+
+\begin{definition}
+\label{def:mps}
+A \emph{measure-preserving system} is a quadruple \((X,\mathcal{B},\mu,T)\) where \((X,\mathcal{B},\mu)\) is a measure space with \(\mu(X)<\infty\) and \(T\colon X\to X\) is measurable and satisfies \(\mu(T^{-1}A)=\mu(A)\) for every \(A\in\mathcal{B}\).
+\end{definition}
+
+Finite measure is the hypothesis that does the work.
+Normalizing to a probability does not change the argument.
+In the classical physical reading, \(T\) is the time-\(1\) map of a flow that preserves a finite measure on its region (Liouville measure on a finite-volume invariant set is the usual source of such a \(T\)).
+The note proves the discrete statement.
+A flow inherits integer-time returns from its time-\(1\) map.
+
+\begin{theorem}[Poincar\'e recurrence]
+\label{thm:poincare}
+Let \((X,\mathcal{B},\mu,T)\) be a measure-preserving system and let \(A\in\mathcal{B}\) satisfy \(\mu(A)>0\).
+Then
+\[
+\mu\bigl(\{x\in A \mid \text{there are infinitely many } n\geq 1 \text{ with } T^{n}x\in A\}\bigr)
+= \mu(A).
+\]
+\end{theorem}
+
+\begin{proof}[Standard argument]
+Let \(E=\{x\in A \mid \forall n\geq 1\ (T^{n}x\notin A)\}\).
+The sets \(T^{-k}E\) for \(k\geq 0\) are pairwise disjoint.
+If \(x\in T^{-i}E\cap T^{-j}E\) for \(0\leq i<j\), then \(T^{i}x\in E\subseteq A\) and \(T^{j-i}(T^{i}x)\in A\), contradicting \(T^{i}x\in E\).
+Invariance gives \(\mu(T^{-k}E)=\mu(E)\).
+Finite measure gives \(\sum_{k\geq 0}\mu(E)\leq \mu(X)<\infty\), so \(\mu(E)=0\).
+Thus almost every point of \(A\) returns to \(A\) at least once.
+
+The same argument applies to each iterate \(T^{N}\), which is measure-preserving.
+The set of points of \(A\) that fail to return under every positive iterate of \(T^{N}\) has measure zero, and the set of points that never return at a time \(n\geq N\) is contained in it.
+A countable union over \(N\) of null sets is null.
+\end{proof}
+
+The theorem is a statement about almost every point of a named measurable set.
+It does not say that every point returns, and it does not say that the return time is short.
+Both strengthenings need hypotheses this argument does not have.
+
+\begin{definition}[\(\varepsilon\)-Return]
+\label{def:epsilon}
+Suppose in addition that \(X\) is a separable metric space, \(\mathcal{B}\) contains the Borel \(\sigma\)-algebra, and \(d\) is the metric.
+The system has \emph{\(\varepsilon\)-Return} when, for every \(\varepsilon>0\),
+\[
+\mu\bigl(\{x\in X \mid \text{there are infinitely many } n\geq 1 \text{ with } d(T^{n}x,x)<\varepsilon\}\bigr)
+= \mu(X).
+\]
+\end{definition}
+
+\begin{corollary}
+\label{cor:epsilon}
+Every measure-preserving system on a separable metric space, with \(\mu\) a finite Borel measure, has \(\varepsilon\)-Return.
+\end{corollary}
+
+\begin{proof}
+Let \(\{U_i\}_{i\in\Nat}\) be a countable basis of nonempty open sets.
+By Theorem~\ref{thm:poincare}, for each \(i\) there is a null set \(N_i\subseteq U_i\) of points that fail to return to \(U_i\) infinitely often.
+Let \(N=\bigcup_i N_i\).
+If \(x\notin N\) and \(\varepsilon>0\), separability supplies a basis element \(U_i\) with \(x\in U_i\subseteq\{y\mid d(y,x)<\varepsilon\}\).
+Infinitely many returns of \(x\) to \(U_i\) are returns to that neighborhood.
+The null set \(N\) does not depend on \(\varepsilon\).
+\end{proof}
+
+\(\varepsilon\)-Return is neighborhood membership for almost every point.
+Exact identity \(T^{n}x=x\) is a different predicate, and the finite-measure hypotheses do not force it.
+
+\begin{proposition}[Exact return can fail everywhere]
+\label{prop:rotation}
+Let \(X=\RR/\ZZ\), let \(\mu\) be Lebesgue measure, and let \(T(x)=x+\alpha \bmod 1\) with \(\alpha\) irrational.
+Then \((X,\mu,T)\) is a measure-preserving system, every point returns to every neighborhood of itself infinitely often, and \(T^{n}x\neq x\) for every \(x\) and every \(n\geq 1\).
+\end{proposition}
+
+\begin{proof}
+Translation preserves Lebesgue measure, and \(\mu(X)=1\).
+If \(T^{n}x=x\), then \(n\alpha\in\ZZ\), so \(\alpha\) is rational.
+For the neighborhood claim, write \(\|\,\cdot\,\|\) for distance to the nearest integer, so \(d(T^{n}x,x)=\|n\alpha\|\).
+The \(N+1\) points \(0,\{\alpha\},\ldots,\{N\alpha\}\) on the circle cannot be pairwise more than \(1/N\) apart, so two of them lie at distance at most \(1/N\).
+Their difference is an integer \(q\) with \(1\leq q\leq N\) and \(\|q\alpha\|\leq 1/N\).
+Fix \(\varepsilon>0\) and suppose \(F=\{n\geq 1:\|n\alpha\|<\varepsilon\}\) is finite.
+Since \(\alpha\) is irrational, \(\|n\alpha\|>0\) for every \(n\geq 1\).
+If \(F\) is empty, any integer \(N>1/\varepsilon\) yields a \(q\) with \(\|q\alpha\|<\varepsilon\), so \(q\in F\), contradicting emptiness.
+If \(F\) is nonempty, let \(\delta=\min_{n\in F}\|n\alpha\|>0\) and choose an integer \(N>\max(1/\varepsilon,1/\delta)\).
+The same step yields \(q\leq N\) with \(\|q\alpha\|\leq 1/N<\delta\), so \(q\in F\) and \(\|q\alpha\|<\delta\), which contradicts the choice of \(\delta\).
+Thus \(F\) is infinite.
+Every point returns to every one of its neighborhoods infinitely often, and the system has \(\varepsilon\)-Return with empty exceptional set.
+This approximation argument is special to the example.
+The measure theorem that applies to every system in Definition~\ref{def:mps} is Theorem~\ref{thm:poincare}, which is almost-everywhere.
+\end{proof}
+
+Proposition~\ref{prop:rotation} is the separator between the two dynamical predicates.
+The system meets every hypothesis of Corollary~\ref{cor:epsilon}.
+The set of exactly periodic points is empty.
+A theorem that delivers \(\varepsilon\)-Return has not delivered bit-identity of states.
+
+\subsection{What \texorpdfstring{\(S\)}{S} can say}
+
+Points of \(\RR^{d}\) are not natural numbers.
+The variables of \(S\) range over numbers, codes of formulas, and codes of proofs.
+A continuous state enters a sentence of \(S\) only after a code has been chosen: a G\"odel number of a definition, an index of a computable Cauchy name, or a code of a basic open set.
+
+\begin{definition}[Code predicates]
+\label{def:codes}
+Fix a standard primitive recursive G\"odel numbering.
+For codes \(c,c'\) and a positive rational \(q\) given by a code, the following are formulas of arithmetic:
+\begin{itemize}
+\item \(\mathrm{EqCode}(c,c')\), the atomic equality \(c=c'\) of the codes as numbers;
+\item \(\mathrm{Near}(c,c',q)\), a formalized statement that the basic open sets (or Cauchy names) numbered by \(c\) and \(c'\) meet within tolerance \(q\).
+\end{itemize}
+Neighborhood membership, once the neighborhood is coded, is of the first kind of statement.
+Identity of the underlying real, when both objects are presented by names, is agreement of those names, which is again a statement about the codes.
+Identity of binary expansions is not well-defined on reals: dyadic rationals have two expansions.
+\end{definition}
+
+\begin{remark}[Predicate boundary]
+\label{rem:boundary}
+Exact bit-identity of an uncoded continuous state is not an \(S\)-predicate.
+There is no formula \(\varphi(v)\) of the language of \(S\) whose intended extension is a singleton \(\{x\}\) for an arbitrary \(x\in\RR^{d}\), because there is no variable in that language for \(x\).
+What \(S\) states, after a coding has been fixed, is \(\mathrm{EqCode}\) or \(\mathrm{Near}\).
+Theorem~\ref{thm:poincare}, formalized in \(\ZFC\), is a sentence about measures and preimages.
+It is not a scheme of \(S\)-atoms ``\(x\) itself returns,'' one for each real \(x\).
+\end{remark}
+
+A symbolic configuration that is already a natural number, or a finite word, is a code.
+Equality of two such configurations is \(\mathrm{EqCode}\), and \(S\) can speak about it directly.
+That case is the setting of Section~\ref{sec:undecidable}.
+It does not restore bit-identity as an \(S\)-predicate of nameless reals, and it does not turn Theorem~\ref{thm:poincare} into a self-certifying sentence.
+
+\begin{definition}[Proof predicate]
+\label{def:prov}
+Let \(\prf_{S}(p,\gn{\varphi})\) be a primitive recursive proof relation coming from a primitive recursive enumeration of the axioms of \(S\), and set
+\[
+\Prov_{S}(\gn{\varphi})\ :\Longleftrightarrow\ \exists p\ \prf_{S}(p,\gn{\varphi}),
+\qquad
+\Con_{S}\ :\Longleftrightarrow\ \neg\Prov_{S}(\gn{0=1}).
+\]
+The box of this note is this predicate:
+\begin{equation}
+\label{eq:box}
+\Box\varphi\ :\Longleftrightarrow\ \Prov_{S}(\gn{\varphi}).
+\end{equation}
+The Hilbert--Bernays--L\"ob derivability conditions are assumed for this choice \citep{hilbertbernays1939,lob1955,boolos1993}: for all sentences \(\varphi,\psi\),
+\begin{align}
+\text{(D1)}\quad & \text{if } S\vdash\varphi \text{ then } S\vdash\Prov_{S}(\gn{\varphi}), \nonumber\\
+\text{(D2)}\quad & S\vdash\Prov_{S}(\gn{\varphi\to\psi})\to\bigl(\Prov_{S}(\gn{\varphi})\to\Prov_{S}(\gn{\psi})\bigr), \label{eq:hbl}\\
+\text{(D3)}\quad & S\vdash\Prov_{S}(\gn{\varphi})\to\Prov_{S}\bigl(\gn{\Prov_{S}(\gn{\varphi})}\bigr). \nonumber
+\end{align}
+\end{definition}
+
+Condition (D1) is a rule about \(S\), not an implication \(\varphi\to\Box\varphi\) proved inside \(S\).
+Conditions (D2) and (D3) are single theorems of \(S\) for each pair of sentences, in fact theorems of \(\PA\) for the standard proof predicate.
+
+\begin{remark}[The predicate is intensional]
+\label{rem:feferman}
+The second incompleteness theorem applies to a proof predicate satisfying \eqref{eq:hbl}.
+It is not a theorem about every arithmetical formula that defines the same set of theorems in the standard model.
+There are numerations of the axioms of a consistent \(S\) for which the associated consistency statement is provable in \(S\) \citep{feferman1960}.
+Any reading that changes the proof predicate has changed the claim.
+In this note \(\Prov_{S}\) always means a standard predicate as in Definition~\ref{def:prov}.
+\end{remark}
+
+\section{Modal packaging}
+\label{sec:modal}
+
+G\"odel--L\"ob logic \(\GL\) is the propositional modal logic of \(\Box\) under \eqref{eq:box} \citep{solovay1976,boolos1993}.
+Modal formulas are built from propositional variables by Boolean connectives and \(\Box\).
+The axioms of \(\GL\) are all propositional tautologies, the distribution axiom
+\[
+\Box(A\to B)\to(\Box A\to\Box B),
+\]
+and L\"ob's axiom
+\begin{equation}
+\label{eq:lob-axiom}
+\Box(\Box A\to A)\to\Box A.
+\end{equation}
+The rules are modus ponens and necessitation: from a theorem \(A\), infer \(\Box A\).
+Necessitation is a rule of proof.
+It does not add the theorem \(A\to\Box A\).
+The transitivity scheme \(\Box A\to\Box\Box A\) is derivable from \eqref{eq:lob-axiom}; it is not an extra assumption.
+
+An \emph{arithmetical realization} is a map \(*\) from propositional variables to sentences of \(S\), extended by the Boolean clauses and by
+\[
+(\Box A)^{*}\ =\ \Prov_{S}(\gn{A^{*}}).
+\]
+
+\begin{theorem}[Solovay completeness]
+\label{thm:solovay}
+Let \(S\) be a consistent recursively axiomatized extension of \(\PA\), and let \(\Prov_{S}\) satisfy \eqref{eq:hbl}.
+A modal sentence \(A\) is a theorem of \(\GL\) if and only if \(S\vdash A^{*}\) for every arithmetical realization \(*\).
+\end{theorem}
+
+\begin{proof}[Citation]
+This is Solovay's arithmetical completeness theorem \citep{solovay1976}; a full development is \citet[Chapters~1--5]{boolos1993}.
+The note uses it as a completed theorem.
+It does not reprove the Solovay embedding.
+\end{proof}
+
+The scheme one would need in order to pass from ``\(S\) proves that it returns'' to ``it returns'' is reflection, \(\Box A\to A\).
+That scheme is not free in \(\GL\).
+
+\begin{proposition}[Reflection is not a theorem of \(\GL\)]
+\label{prop:no-reflection}
+\(\GL\nvdash \Box p\to p\).
+On the Kripke frame consisting of a single world with no accessibility arrow, \(\Box p\to p\) is not valid.
+Over \(S\), the arithmetical instance \(\Prov_{S}(\gn{0=1})\to 0=1\) is equivalent to \(\Con_{S}\).
+\end{proposition}
+
+\begin{proof}
+Finite transitive irreflexive frames validate \(\GL\) \citep{boolos1993}.
+In a one-point frame with empty accessibility relation, \(\Box p\) is vacuously true at the only world, because that world sees no world at which \(p\) fails.
+Interpreting \(p\) as false at that world makes \(\Box p\to p\) false there.
+Hence the scheme is not \(\GL\)-valid, and not a \(\GL\)-theorem.
+
+For the arithmetical instance, \(\PA\) proves \(\neg(0=1)\).
+Propositional logic then yields equivalence, inside \(S\), of \(\neg\Prov_{S}(\gn{0=1})\) and \(\Prov_{S}(\gn{0=1})\to 0=1\).
+The left-hand side is \(\Con_{S}\).
+\end{proof}
+
+By Theorem~\ref{thm:solovay} and the second incompleteness theorem (Theorem~\ref{thm:g2} below), \(S\) does not prove every arithmetical realization of \(\Box p\to p\).
+The one-point frame shows the modal failure before any appeal to arithmetic.
+The two failures match.
+
+L\"ob's axiom is the relation \(\GL\) does prove.
+Read as a statement about a sentence \(R\), it says:
+\begin{equation}
+\label{eq:lob-reading}
+\Box(\Box R\to R)\ \to\ \Box R.
+\end{equation}
+The hypothesis is that the reflection instance for \(R\) is itself provable in \(S\).
+The conclusion is that \(R\) is provable in \(S\).
+Truth of \(R\) is a separate claim.
+Passing from \(\Box R\) to \(R\) uses reflection, which Proposition~\ref{prop:no-reflection} withholds.
+
+There is a standard extension used for truth rather than for provability.
+\(\GLS\) is \(\GL\) together with the axiom scheme \(\Box A\to A\), with necessitation restricted to theorems of \(\GL\) \citep{boolos1993}.
+The restriction is required for consistency of the calculus: unrestricted necessitation applied to the reflection instance \(\Box\bot\to\bot\) yields \(\Box(\Box\bot\to\bot)\), L\"ob's axiom yields \(\Box\bot\), and reflection then yields \(\bot\).
+Under a sound realization, theorems of \(\GLS\) are true in the standard model.
+The reflection axioms of \(\GLS\) are not theorems of \(S\), and they are not theorems of \(\GL\).
+External soundness of \(S\), when it is assumed, is an assumption about the standard model.
+It is not a derivation inside \(S\), and it is not a hypothesis of Theorem~\ref{thm:poincare}.
+
+\begin{remark}[``Necessarily returns'']
+\label{rem:necessarily}
+Take \(R\) to be an arithmetical sentence proposed as a coded return claim.
+The narrative inference ``necessarily returns, therefore returns'' is the inference from \(\Box R\) to \(R\).
+\(\GL\) does not license it.
+The L\"ob condition under which \(S\) proves \(R\) is \(S\vdash \Prov_{S}(\gn{R})\to R\), which by L\"ob's theorem (Theorem~\ref{thm:lob}) already yields \(S\vdash R\).
+In that case the box is not an independent witness of return.
+\(S\) proves the return sentence outright, or the L\"ob hypothesis has not been met.
+The finite-measure hypotheses of Theorem~\ref{thm:poincare} do not provide \(S\vdash \Box R\to R\).
+\end{remark}
+
+\section{Epistemic packaging}
+\label{sec:epistemic}
+
+The operator of this note is \(\Box\), defined by \eqref{eq:box} as provability in \(S\).
+This section records what would change if the same box were reread as knowledge, and then declines that rereading.
+
+The modal system \(\mathsf{S5}\) for an operator \(K\) has distribution, the factivity axiom \(KA\to A\), the positive-introspection axiom \(KA\to KKA\), and the negative-introspection axiom \(\neg KA\to K\neg KA\), with modus ponens and necessitation.
+Factivity is the inference ``known return yields return.''
+Proposition~\ref{prop:no-reflection} says that the corresponding scheme for \(\Prov_{S}\) is not a theorem of \(\GL\) and that its instance at \(0=1\) is \(\Con_{S}\).
+A calculus that adds factivity for the same symbol that denotes \(\Prov_{S}\) is the wrong calculus for that symbol.
+Calling the operator knowledge does not change the proof predicate.
+
+A factive complex can be defined in the metatheory without pretending that \(S\) defines it:
+\begin{equation}
+\label{eq:known}
+K_{S}(\varphi)\ :\Longleftrightarrow\ \Prov_{S}(\gn{\varphi})\ \text{is true and}\ \varphi\ \text{is true}.
+\end{equation}
+The implication \(K_{S}(\varphi)\to\varphi\) holds by the second conjunct, in the metatheory.
+It is not an \(S\)-theorem scheme.
+\(S\) cannot define a truth predicate for its own language \citep{tarski1936}, so \eqref{eq:known} is not a formula of \(S\).
+``Knowledge of return,'' on this reading, is an external comment on a sentence.
+It is not a configuration in \(X\), and it is not a proof of \(\Con_{S}\).
+
+The note therefore does not adopt a knower, an \(\mathsf{S5}\) axiom, or a knowability principle.
+Where a box appears below, it is \(\Prov_{S}\).
+
+\section{Self-certification barrier}
+\label{sec:barrier}
+
+Self-certification is a particular arithmetical sentence, obtained when a configuration code is required to contain \(S\), or to contain a proof, and the sentence says of its own code that this happens.
+The diagonal lemma supplies the sentence.
+It does not by itself decide the sentence.
+
+\begin{lemma}[Diagonal lemma]
+\label{lem:diag}
+For every formula \(\psi(v)\) of \(S\) with one free variable, there is a sentence \(\rho\) such that
+\[
+S\ \vdash\ \rho\ \leftrightarrow\ \psi(\gn{\rho}).
+\]
+\end{lemma}
+
+\begin{proof}[Citation]
+The usual fixed-point construction from the proof of the first incompleteness theorem \citep{godel1931,boolos1993}.
+\end{proof}
+
+Two fixed points have to be kept apart, and both have to be kept apart from \(\varepsilon\)-Return.
+
+\begin{definition}[Three sentences]
+\label{def:three}
+Let \(R(v)\) be any formula of \(S\) with one free variable.
+The intended reading of \(R(c)\), when one is fixed, is an arithmetization of ``the configuration coded by \(c\) recurs'' or ``the configuration coded by \(c\) encodes an \(S\)-proof of a named sentence.''
+The barrier statements do not depend on further details of \(R\).
+\begin{enumerate}
+\item \textbf{External recurrence.}
+The sentence \(E\) of set theory is Theorem~\ref{thm:poincare}, including the finite-measure hypotheses in its antecedent.
+Its provability, if discussed, is \(\Prov_{\ZFC}(\gn{E})\).
+
+\item \textbf{Henkin certificate.}
+By Lemma~\ref{lem:diag} applied to \(\Prov_{S}(v)\), there is a sentence \(\sigma\) with
+\begin{equation}
+\label{eq:henkin}
+S\ \vdash\ \sigma\ \leftrightarrow\ \Prov_{S}(\gn{\sigma}).
+\end{equation}
+This is the sentence that says ``\(S\) proves this sentence.''
+
+\item \textbf{Consistency-bundled return.}
+By Lemma~\ref{lem:diag} applied to \(R(v)\wedge\Con_{S}\), there is a sentence \(\rho\) with
+\begin{equation}
+\label{eq:bundled}
+S\ \vdash\ \rho\ \leftrightarrow\ \bigl(R(\gn{\rho})\wedge\Con_{S}\bigr).
+\end{equation}
+This is the sentence that says ``the recurrence formula holds of my code, and \(S\) is consistent.''
+\end{enumerate}
+\end{definition}
+
+Encoding \(S\) in a configuration is already covered by the second clause when the certificate is a proof code, and by the third when the sentence demands \(\Con_{S}\) itself.
+A code for the axiom set of \(S\) can sit inside the number \(\gn{\rho}\).
+That is ordinary G\"odel numbering.
+It does not add an axiom to \(S\).
+
+\begin{theorem}[G\"odel's second incompleteness theorem]
+\label{thm:g2}
+If \(S\) is consistent and \(\Prov_{S}\) satisfies \eqref{eq:hbl}, then \(S\nvdash\Con_{S}\).
+\end{theorem}
+
+\begin{proof}[Citation]
+\citet{godel1931}, in the form isolated by the derivability conditions \citep{hilbertbernays1939,lob1955,boolos1993}.
+The intensional caveat is Remark~\ref{rem:feferman}.
+\end{proof}
+
+\begin{theorem}[L\"ob]
+\label{thm:lob}
+If \(S\vdash \Prov_{S}(\gn{\varphi})\to\varphi\), then \(S\vdash\varphi\).
+Equivalently, under \eqref{eq:hbl},
+\[
+S\ \vdash\ \Prov_{S}\bigl(\gn{\Prov_{S}(\gn{\varphi})\to\varphi}\bigr)\ \to\ \Prov_{S}(\gn{\varphi}).
+\]
+\end{theorem}
+
+\begin{proof}[Citation]
+\citet{lob1955}.
+The modal form is \eqref{eq:lob-axiom}, via Theorem~\ref{thm:solovay}.
+\end{proof}
+
+\begin{proposition}[The Henkin certificate does not prove consistency]
+\label{prop:henkin}
+Assume \(S\) is consistent and \(\Prov_{S}\) is standard.
+Then \(S\vdash\sigma\), the sentence \(\sigma\) is true in the standard model, \(\Con_{S}\) is true in the standard model, and
+\[
+S\ \nvdash\ \sigma\to\Con_{S}.
+\]
+\end{proposition}
+
+\begin{proof}
+From \eqref{eq:henkin}, \(S\vdash \Prov_{S}(\gn{\sigma})\to\sigma\).
+Theorem~\ref{thm:lob} gives \(S\vdash\sigma\).
+A standard proof predicate represents actual provability, so \(\Prov_{S}(\gn{\sigma})\) is true in \(\Nat\), and therefore \(\sigma\) is true in \(\Nat\).
+Consistency of \(S\) means that \(0=1\) has no \(S\)-proof, so the standard sentence \(\Con_{S}\) is true in \(\Nat\).
+The implication \(\sigma\to\Con_{S}\) is therefore true in \(\Nat\).
+
+It is not a theorem of \(S\).
+If \(S\vdash\sigma\to\Con_{S}\), then \(S\vdash\sigma\) and modus ponens would give \(S\vdash\Con_{S}\), contradicting Theorem~\ref{thm:g2}.
+\end{proof}
+
+Proposition~\ref{prop:henkin} is the precise status of ``this sentence is proved in \(S\).''
+\(S\) does prove that self-certificate.
+Truth of the certificate in \(\Nat\) is secured by the existence of the proof L\"ob's theorem constructs.
+What fails inside \(S\) is the passage from that certificate to \(\Con_{S}\).
+The implication can be true in \(\Nat\) and still unprovable in \(S\).
+That is incompleteness of \(S\) at a true sentence.
+It is not a contradiction between the certificate and consistency, and it is not a statement about points of \(X\).
+
+\begin{proposition}[The bundled fixed point is unprovable]
+\label{prop:bundled}
+Assume \(S\) is consistent.
+Let \(\rho\) be as in \eqref{eq:bundled} for an arbitrary formula \(R(v)\).
+Then \(S\vdash\rho\to\Con_{S}\), and \(S\nvdash\rho\).
+If \(R(v)\) is the formula \(v=v\), then \(\rho\) is equivalent over \(S\) to \(\Con_{S}\), hence true in \(\Nat\) and unprovable in \(S\).
+If \(R(v)\) is the formula \(v\neq v\), then \(S\vdash\neg\rho\).
+For a general recurrence formula, unprovability of \(\rho\) holds either way, and the truth-value of \(\rho\) in \(\Nat\) tracks the truth-value of \(R(\gn{\rho})\).
+\end{proposition}
+
+\begin{proof}
+The left-to-right direction of \eqref{eq:bundled} is \(S\vdash\rho\to\Con_{S}\).
+If \(S\vdash\rho\), modus ponens yields \(S\vdash\Con_{S}\), contradicting Theorem~\ref{thm:g2}.
+Hence \(S\nvdash\rho\).
+
+If \(S\vdash R(\gn{\rho})\leftrightarrow \top\), then \eqref{eq:bundled} gives \(S\vdash\rho\leftrightarrow\Con_{S}\).
+Consistency makes \(\Con_{S}\) true and Theorem~\ref{thm:g2} makes it unprovable, so the same holds of \(\rho\).
+If \(S\vdash R(\gn{\rho})\leftrightarrow \bot\), then \(S\vdash\neg\rho\).
+In the general case, \(\Con_{S}\) is true, so \(\Nat\models\rho\) if and only if \(\Nat\models R(\gn{\rho})\).
+The note does not evaluate \(R(\gn{\rho})\) for any particular arithmetization of a dynamical return.
+\end{proof}
+
+The slogan ``this life returns, including this proof that it returns'' collapses Definition~\ref{def:three}.
+Split into the sentences actually available, it becomes one of the following, and they have different statuses.
+
+\begin{center}
+\begin{tabular}{@{}llp{6.4cm}@{}}
+\toprule
+Reading & Sentence & Status, when \(S\) is consistent \\
+\midrule
+\(\varepsilon\)-Return & \(E\) in \(\ZFC\) & Classical theorem under finite measure. Not a \(\Con_{S}\) claim. \\
+Henkin certificate & \(\sigma\leftrightarrow\Box\sigma\) & Provable in \(S\). Does not prove \(\Con_{S}\). \\
+Bundled return & \(\rho\leftrightarrow R(\gn{\rho})\wedge\Con_{S}\) & Unprovable in \(S\). Truth tracks \(R\), not a refutation of return. \\
+Detachment & \(\Box A\to A\) & Not a theorem of \(\GL\). The instance \(A=\bot\) is \(\Con_{S}\). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}[No exemption by coding a configuration]
+\label{rem:no-exemption}
+Theorem~\ref{thm:g2} has no side condition of the form ``unless a configuration code contains an index of \(S\).''
+A numeral denoting such a code can appear in a sentence of \(S\).
+If that sentence is \(\Con_{S}\) itself, \(S\) does not prove it.
+If that sentence is \(\sigma\), Proposition~\ref{prop:henkin} applies.
+If that sentence is \(\rho\), Proposition~\ref{prop:bundled} applies.
+Writing a description of \(S\) into a number does not produce a derivation of \(\Con_{S}\) from the axioms of \(S\).
+\end{remark}
+
+\begin{remark}[Witnessed \(\Sigma_1\) returns are a different sentence]
+\label{rem:sigma1}
+A single coded orbit is not the bundled fixed point.
+If \(\varphi\) is a \(\Sigma_1\) sentence and \(\Nat\models\varphi\), then \(\PA\vdash\varphi\).
+In particular, if a computable configuration \(C\) actually returns to itself, a computation trace is a witness, and the \(\Sigma_1\) sentence ``\(C\) recurs'' is a theorem of \(\PA\).
+Incompleteness does not hide witnessed returns.
+The sentences that self-certification adds are of another kind: \(\Con_{S}\) is \(\Pi_1\), reflection at a general sentence is not a true \(\Sigma_1\) fact supplied by a return time, and \(\rho\) conjoins a recurrence formula with \(\Con_{S}\).
+\(\Sigma_1\)-completeness settles the witnessed \(\Sigma_1\) sentence and does not settle \(\rho\).
+\end{remark}
+
+\begin{remark}[A stronger theory is not an internal certificate]
+\label{rem:gentzen}
+Theorem~\ref{thm:g2} says that \(S\) does not prove \(\Con_{S}\).
+It does not say that no theory proves \(\Con_{S}\).
+A stronger system can prove the consistency of a weaker one.
+Whatever that stronger proof is, it is a derivation in the stronger system.
+It is not a derivation in \(S\), and placing a copy of it inside a described configuration does not make it a derivation in \(S\).
+The barrier in this section is self-certification: proving \(\Con_{S}\) from within \(S\), or detaching \(\Box\) inside \(\GL\).
+\end{remark}
+
+Nothing in Propositions~\ref{prop:henkin} and~\ref{prop:bundled} mentions \(\mu\), \(T\), or a neighborhood.
+They remain true if the formula \(R(v)\) arithmetizes a fact unrelated to dynamics.
+They therefore cannot cancel a measure calculation in \(\ZFC\), and they cannot supply the finite-measure hypothesis that Theorem~\ref{thm:poincare} requires.
+
+\section{Undecidability of recurrence queries}
+\label{sec:undecidable}
+
+The question ``does configuration \(C\) recur?'' is a decision problem about a named class of systems.
+Its undecidability, when it holds, is a fact about that decision problem.
+
+\begin{definition}
+\label{def:config}
+A \emph{Turing configuration} is a triple \((q,t,h)\) where \(q\) is a state of a Turing machine, \(t\) is a tape inscription of finite support, and \(h\in\ZZ\) is a head position.
+\(\mathrm{Step}_{M}\) is the usual one-step function on configurations of a machine \(M\).
+A configuration \(C\) \emph{recurs} under \(M\) when there exists \(n\geq 1\) with \(\mathrm{Step}_{M}^{n}(C)=C\).
+\end{definition}
+
+Equality here is equality of finitely presented configurations.
+In the sense of Definition~\ref{def:codes}, it is \(\mathrm{EqCode}\), not neighborhood membership in a continuum.
+
+\begin{proposition}[Recurrence queries can encode halting]
+\label{prop:undecidable}
+The set of pairs \((M,C)\) such that \(C\) recurs under \(M\) is not recursive.
+\end{proposition}
+
+\begin{proof}[Standard reduction]
+The halting set \(\{(N,w) \mid N \text{ halts on input } w\}\) is not recursive \citep{turing1936}.
+From a pair \((N,w)\), construct a machine \(M_{N,w}\) whose finite control contains a copy of the transition table of \(N\) and a procedure that writes the finite word \(w\).
+The map \((N,w)\mapsto M_{N,w}\) is computable.
+Let \(q_0\) be the start state of \(M_{N,w}\) and let \(C_0\) be the configuration \((q_0,\text{blank tape},0)\).
+In the transition table, \(q_0\) occurs only as the source of the first step and as the target of the cleanup step described below.
+
+From \(C_0\) the first transition enters a work state distinct from \(q_0\).
+The machine writes \(w\), a separator, and a binary counter, then simulates \(N\) on \(w\), incrementing the counter once per simulated step.
+Every configuration in this phase is distinct from \(C_0\): the state is not \(q_0\).
+If the simulation halts, the machine enters a cleanup state \(q_{\mathrm{clean}}\neq q_0\) and sweeps the finite marked region, erasing symbols until the tape is blank and the head is on cell \(0\), remaining in \(q_{\mathrm{clean}}\) throughout the sweep.
+One further transition sends that blank-tape configuration to \(C_0\).
+A single Turing step is not asked to erase an arbitrary tape; the sweep does the erasing, and only the last step enters \(q_0\).
+
+If \(N\) halts on \(w\), the run from \(C_0\) reaches that last step, so \(C_0\) recurs.
+If \(N\) does not halt on \(w\), the cleanup state is never entered, the counter is unbounded, and no later configuration has a blank tape in state \(q_0\).
+Thus \(C_0\) does not recur.
+A decision procedure for recurrence of pairs \((M,C)\) would decide the halting set by computing \((M_{N,w},C_0)\).
+\end{proof}
+
+The same style of encoding is what makes various long-term questions about dynamical systems that contain a universal computation undecidable \citep{moore1990}.
+Proposition~\ref{prop:undecidable} is the special case in which the long-term question is exact return of a finitely presented configuration.
+The short proof above is the direct reduction; it does not depend on the extra structure of generalized shifts.
+
+\begin{remark}[What the reduction produces]
+\label{rem:both}
+If \(N\) halts, the constructed \(C_0\) recurs.
+If \(N\) does not halt, that \(C_0\) does not recur.
+Both sorts of instance exist: there are machines that halt and machines that do not.
+Undecidability is the nonexistence of a total algorithm that sorts all instances.
+It is not an assertion that recurrent configurations do not exist, and it is not an assertion that they do.
+\end{remark}
+
+\begin{proposition}[Finitely presented systems are decidable]
+\label{prop:finite}
+Let \(X\) be a finite set and let \(T\colon X\to X\) be given explicitly.
+For every \(x\in X\) there exist \(k\geq 0\) and \(n\geq 1\) with \(k+n\leq |X|\) and \(T^{k+n}(x)=T^{k}(x)\).
+The point \(x\) itself recurs if and only if \(T^{n}(x)=x\) for some \(n\) with \(1\leq n\leq |X|\).
+Both questions are decidable by running the orbit for at most \(|X|\) steps.
+\end{proposition}
+
+\begin{proof}
+The \(|X|+1\) configurations \(x,Tx,\ldots,T^{|X|}x\) are not pairwise distinct, so \(T^{a}(x)=T^{b}(x)\) for some \(0\leq a<b\leq |X|\).
+The first repetition closes a cycle.
+Running \(|X|\) steps finds it.
+\end{proof}
+
+Proposition~\ref{prop:finite} is the reason Proposition~\ref{prop:undecidable} needs an unbounded tape.
+The counter in the reduction takes infinitely many distinct values along a non-halting simulation.
+The counting measure on the set of all finite-support configurations is an infinite measure.
+Theorem~\ref{thm:poincare} does not apply to that measure, so a non-recurrent \(C_0\) is not a counterexample to \(\varepsilon\)-Return.
+A system whose configuration set is finite falls under Proposition~\ref{prop:finite}: every orbit eventually cycles, and the cycle is found by inspection.
+Exact eventual periodicity in a finite set is still \(\mathrm{EqCode}\) on that set.
+It is not a proof of \(\Con_{S}\), and it is not \(\varepsilon\)-Return on a continuum.
+
+\section{What is not claimed}
+\label{sec:not}
+
+The positive content of the note is the separation recorded above.
+The following consequences do not follow from it.
+
+\begin{enumerate}
+\item \textbf{\(\varepsilon\)-Return stands under its own hypotheses.}
+Theorem~\ref{thm:poincare} is a theorem of ordinary mathematics from finite measure and invariance.
+Its formalization is a theorem of \(\ZFC\) under those hypotheses written into the antecedent.
+Consistency or incompleteness of \(S\) is not a hypothesis of the proof in Section~\ref{sec:setup}, and it does not appear in the conclusion.
+Incompleteness of \(S\) does not entail that orbits fail to return.
+
+\item \textbf{Incompleteness does not support the recurrence theorem.}
+Theorem~\ref{thm:g2} says \(S\nvdash\Con_{S}\).
+It does not enlarge \(\mu\), it does not force \(\mu(X)<\infty\), and it does not move a point into a neighborhood of itself.
+There is no inference from \(S\nvdash\Con_{S}\) to \(\varepsilon\)-Return, nor from \(S\nvdash\Con_{S}\) to exact identity of states.
+A failure of self-certification is not evidence that a phase point recurs.
+
+\item \textbf{The bundled sentence is unprovable, and its truth tracks \(R\).}
+Proposition~\ref{prop:bundled} says that consistent \(S\) does not prove \(\rho\).
+If the recurrence formula \(R(\gn{\rho})\) is true in \(\Nat\), then \(\rho\) is true and unprovable.
+If it is false, then \(\rho\) is false.
+The note supplies no dynamical calculation that would decide \(R(\gn{\rho})\).
+Unprovability of the bundle is not a disproof of recurrence.
+
+\item \textbf{Witnessed returns remain provable when they are \(\Sigma_1\) and true.}
+Remark~\ref{rem:sigma1} is part of the claim.
+A trace of a return of a coded configuration is a proof in \(\PA\) of that \(\Sigma_1\) sentence.
+The self-certification barrier concerns certificates that ask \(S\) to prove \(\Con_{S}\), or ask \(\GL\) to detach \(\Box A\to A\), or ask a sentence to include \(\Con_{S}\) in its own fixed point.
+
+\item \textbf{\(\Box\) is provability in \(S\).}
+It is not an \(\mathsf{S5}\) knowledge operator and not a metaphysical necessity.
+``Necessarily returns, therefore returns'' is \(\Box R\to R\), which Proposition~\ref{prop:no-reflection} excludes from \(\GL\).
+The admissible substitute is L\"ob's condition \(S\vdash\Box R\to R\), which yields \(S\vdash R\) rather than a new passage from a box to a fact about \(X\).
+
+\item \textbf{\(\varepsilon\)-Return is not the demand to will an identical life.}
+The published ethical sentence asks whether one can will this life in the same order, again and innumerable times \citep[\S 341]{nietzsche1882}.
+\(\varepsilon\)-Return says that, under named measure hypotheses, almost every state returns to every neighborhood of itself.
+A neighborhood of a state is membership in a positive-radius set.
+Proposition~\ref{prop:rotation} meets the measure hypotheses at every point and meets exact identity at none.
+Uniqueness of one biographical sequence is not a conclusion of Theorem~\ref{thm:poincare}.
+The ethical sentence is not a theorem of \(\ZFC\) derived here, and it is not a theorem of \(\GL\).
+
+\item \textbf{G\"odel 1949 is a different construction.}
+The rotating universes of \citet{godel1949} are exact solutions of Einstein's field equations in which some worldlines are closed.
+That is a geometric statement under those field equations and those metrics.
+It is not \(\varepsilon\)-Return, it is not \(\Con_{S}\), and it is not Proposition~\ref{prop:undecidable}.
+
+\item \textbf{Undecidability of a query is not a theorem about a measure.}
+Proposition~\ref{prop:undecidable} says that no algorithm classifies all machine-configuration pairs.
+Remark~\ref{rem:both} records that the reduction builds recurrent configurations and non-recurrent ones.
+Proposition~\ref{prop:finite} records that a fully presented finite system is decidable by inspection and eventually periodic.
+None of these sentences is the negation of Theorem~\ref{thm:poincare}, and none of them is that theorem.
+\end{enumerate}
+
+The three readings in the introduction can now be stated in one place, with the systems named.
+\(\varepsilon\)-Return is Theorem~\ref{thm:poincare} and Corollary~\ref{cor:epsilon}, proved in analysis from finite measure, and formalizable in \(\ZFC\).
+What \(S\) can say about a continuous state is \(\mathrm{EqCode}\) or \(\mathrm{Near}\) for a chosen code, as in Remark~\ref{rem:boundary}.
+What \(S\) can say about a certificate that includes \(S\) is Proposition~\ref{prop:henkin} for the Henkin sentence and Proposition~\ref{prop:bundled} for the sentence that conjoins \(\Con_{S}\); the passage from \(\Box R\) to \(R\) is Remark~\ref{rem:necessarily}.
+The decision problem for exact recurrence of Turing configurations is Proposition~\ref{prop:undecidable}.
+Each sentence keeps the hypotheses of its own proof.
+None of them is a booster for another.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}
